@@ -1,0 +1,11 @@
+framework module TJDBluetoothSDK {
+  umbrella header "TJDBluetoothSDK.h"
+
+  export *
+  module * { export * }
+}
+
+module TJDBluetoothSDK.Swift {
+    header "TJDBluetoothSDK-Swift.h"
+    requires objc
+}
