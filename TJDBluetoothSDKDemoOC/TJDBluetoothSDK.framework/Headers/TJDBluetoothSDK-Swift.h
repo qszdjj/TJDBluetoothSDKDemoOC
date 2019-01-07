@@ -298,9 +298,11 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK12LongSitModel")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK10SleepModel")
 @interface SleepModel : DataModel
-/// 数据总条数
+/// 0 - 6共 7天
+@property (nonatomic) NSInteger day;
+/// 某天数据总条数，indexCount为0,表示数据无效。
 @property (nonatomic) NSInteger indexCount;
-/// 第几条数据 从0开始
+/// 某天第几条数据 从0开始
 @property (nonatomic) NSInteger index;
 /// 1, 2, 3 对应清醒，浅睡，深睡
 @property (nonatomic) NSInteger state;
@@ -336,12 +338,17 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK14SleepTimeModel")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK9StepModel")
 @interface StepModel : DataModel
-/// 数据总条数
+/// 0 - 6共 7天
+@property (nonatomic) NSInteger day;
+/// 某天数据总条数，indexCount为0,表示数据无效。
 @property (nonatomic) NSInteger indexCount;
 /// 第几条数据 从0开始
 @property (nonatomic) NSInteger index;
+/// 单位  步
 @property (nonatomic) NSInteger step;
+/// 单位 米
 @property (nonatomic) NSInteger distance;
+/// 单位 卡
 @property (nonatomic) NSInteger cal;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -349,12 +356,19 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK9StepModel")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK12WUAlarmClock")
 @interface WUAlarmClock : NSObject
+/// 闹钟id 0…4 总共五组闹钟
 @property (nonatomic) NSInteger clockId;
+/// 闹钟开关状态
 @property (nonatomic) BOOL isOn;
+/// 2的 0，1，2，3，4，5，6，分别代表天数 累计的和表示有哪几天, 0表示星期天
 @property (nonatomic) NSInteger weekday;
+/// 重复间隔（稍后提醒功能）
 @property (nonatomic) NSInteger repeatInterval;
+/// 重复次数（稍后提醒的次数）
 @property (nonatomic) NSInteger repeatCount;
+/// 闹钟触发的时间的小时值  0…23
 @property (nonatomic) NSInteger hour;
+/// 闹钟触发的时间的分钟值  0…59
 @property (nonatomic) NSInteger minute;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -385,7 +399,7 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK12WUBleManager")
 /// 单例
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager * _Nonnull shared;)
 + (WUBleManager * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
-/// 如果要过滤设备，请在{startFindBleDevices}之前设置一个已知的字符串
+/// 如果要过滤设备，请在{startFindBleDevices}之前设置一个客户已知的字符串, 不设置默认只搜索本公司的设备
 @property (nonatomic, copy) NSString * _Nonnull filterString;
 /// 系统里的蓝牙对象
 @property (nonatomic, strong) CBPeripheral * _Nullable activePeripheral;
@@ -458,24 +472,31 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 - (void)setTimeForWristband;
 /// 获取手环电量
 - (void)getBatteryForWristband;
-/// 手环语言设置 中文和英文
+/// 手环语言设置 检测手机是否为中文和繁体文，其余的语言都默认为英文
 - (void)setLanguageForWristband;
+/// 设置手环的默认单位，公制和英制，12小时制和24小时制
+/// @param model WUUserInfo
 - (void)setZhiShiForWristband:(WUUserInfo * _Nonnull)model;
+/// 获取设置信息，包含固件版本，固件版本，产品型号
 - (void)getDeviceInfoForWristband;
+/// 查找设备，手环会亮屏，同时震动
 - (void)findDeviceForWristband;
+/// 进入或退出相机时，给手环发送对应的操作
+/// @param isIn 进入或退出相机
 - (void)setCameraForWristband:(BOOL)isIn;
 /// 拍照成功后回复手环
 - (void)responseCameraForWristband;
 - (void)getLongSitForWristband;
 /// 设置久坐提醒时间间隔
-/// \param model <#model description#>
+/// \param model LongSitModel
 ///
 - (void)setLongSitForWristband:(LongSitModel * _Nonnull)model;
 - (void)getDrinkForWristband;
 /// 设置喝水提醒时间间隔
-/// \param model <#model description#>
+/// \param model DrinkModel
 ///
 - (void)setDrinkForWristband:(DrinkModel * _Nonnull)model;
+/// 获取手环相关功能的开启或关闭状态
 - (void)getSwitchForWristband;
 - (void)setSwitchForWristband:(FunctionSwitchModel * _Nonnull)model;
 - (void)getDisplayForWristband;
@@ -550,6 +571,40 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUBleModel")
 @property (nonatomic, copy) NSString * _Nonnull internalNumber;
 /// YWQ 公司专用设备id
 @property (nonatomic, copy) NSString * _Nonnull deviceID;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_CLASS("_TtC15TJDBluetoothSDK6WUDate")
+@interface WUDate : NSObject
+@property (nonatomic) NSInteger year;
+@property (nonatomic) NSInteger month;
+@property (nonatomic) NSInteger day;
+@property (nonatomic) NSInteger hour;
+@property (nonatomic) NSInteger minute;
+@property (nonatomic) NSInteger second;
+/// 星期几 0是周日
+@property (nonatomic) NSInteger weekday;
++ (WUDate * _Nonnull)setupWithCurrent:(NSDate * _Nonnull)date SWIFT_WARN_UNUSED_RESULT;
+/// date转时间戳
+/// \param timeStamp Int
+///
+///
+/// returns:
+/// Date
++ (NSDate * _Nonnull)dateFromTimeStamp:(NSInteger)timeStamp SWIFT_WARN_UNUSED_RESULT;
+/// 时间戳转对应时间  Date
+/// \param date date
+///
+///
+/// returns:
+/// Int
++ (NSInteger)timeStampFromDate:(NSDate * _Nonnull)date SWIFT_WARN_UNUSED_RESULT;
+/// 把WUDate转成对应的Date
+///
+/// returns:
+/// Date
+- (NSDate * _Nonnull)currentDate SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 

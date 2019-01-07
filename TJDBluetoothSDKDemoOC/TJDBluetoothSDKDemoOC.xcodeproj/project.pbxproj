@@ -7,15 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E2C7DA321E3354700911DE7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C7DA121E3354700911DE7 /* ViewController.m */; };
+		3E2C7DA521E3356900911DE7 /* TJDBluetoothSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2C7DA421E3356900911DE7 /* TJDBluetoothSDK.framework */; };
+		3E2C7DA621E3356900911DE7 /* TJDBluetoothSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E2C7DA421E3356900911DE7 /* TJDBluetoothSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3ECE662A21DDFEFD00444B8A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ECE662921DDFEFD00444B8A /* AppDelegate.m */; };
-		3ECE662D21DDFEFD00444B8A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ECE662C21DDFEFD00444B8A /* ViewController.m */; };
 		3ECE663021DDFEFD00444B8A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3ECE662E21DDFEFD00444B8A /* Main.storyboard */; };
 		3ECE663221DDFEFE00444B8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ECE663121DDFEFE00444B8A /* Assets.xcassets */; };
 		3ECE663521DDFEFE00444B8A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3ECE663321DDFEFE00444B8A /* LaunchScreen.storyboard */; };
 		3ECE663821DDFEFE00444B8A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ECE663721DDFEFE00444B8A /* main.m */; };
 		3ECE664021DDFF1700444B8A /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECE663F21DDFF1700444B8A /* TestModel.swift */; };
-		3ECE664221DDFF5C00444B8A /* TJDBluetoothSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECE664121DDFF5C00444B8A /* TJDBluetoothSDK.framework */; };
-		3ECE664321DDFF5C00444B8A /* TJDBluetoothSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3ECE664121DDFF5C00444B8A /* TJDBluetoothSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,7 +25,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3ECE664321DDFF5C00444B8A /* TJDBluetoothSDK.framework in Embed Frameworks */,
+				3E2C7DA621E3356900911DE7 /* TJDBluetoothSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -33,11 +33,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3E2C7DA121E3354700911DE7 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		3E2C7DA221E3354700911DE7 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		3E2C7DA421E3356900911DE7 /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TJDBluetoothSDK.framework; sourceTree = "<group>"; };
 		3ECE662521DDFEFD00444B8A /* TJDBluetoothSDKDemoOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TJDBluetoothSDKDemoOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ECE662821DDFEFD00444B8A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3ECE662921DDFEFD00444B8A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		3ECE662B21DDFEFD00444B8A /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		3ECE662C21DDFEFD00444B8A /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		3ECE662F21DDFEFD00444B8A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3ECE663121DDFEFE00444B8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3ECE663421DDFEFE00444B8A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -45,7 +46,6 @@
 		3ECE663721DDFEFE00444B8A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3ECE663E21DDFF1600444B8A /* TJDBluetoothSDKDemoOC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TJDBluetoothSDKDemoOC-Bridging-Header.h"; sourceTree = "<group>"; };
 		3ECE663F21DDFF1700444B8A /* TestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
-		3ECE664121DDFF5C00444B8A /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TJDBluetoothSDK.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3ECE664221DDFF5C00444B8A /* TJDBluetoothSDK.framework in Frameworks */,
+				3E2C7DA521E3356900911DE7 /* TJDBluetoothSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,7 +63,7 @@
 		3ECE661C21DDFEFD00444B8A = {
 			isa = PBXGroup;
 			children = (
-				3ECE664121DDFF5C00444B8A /* TJDBluetoothSDK.framework */,
+				3E2C7DA421E3356900911DE7 /* TJDBluetoothSDK.framework */,
 				3ECE662721DDFEFD00444B8A /* TJDBluetoothSDKDemoOC */,
 				3ECE662621DDFEFD00444B8A /* Products */,
 			);
@@ -82,8 +82,8 @@
 			children = (
 				3ECE662821DDFEFD00444B8A /* AppDelegate.h */,
 				3ECE662921DDFEFD00444B8A /* AppDelegate.m */,
-				3ECE662B21DDFEFD00444B8A /* ViewController.h */,
-				3ECE662C21DDFEFD00444B8A /* ViewController.m */,
+				3E2C7DA221E3354700911DE7 /* ViewController.h */,
+				3E2C7DA121E3354700911DE7 /* ViewController.m */,
 				3ECE663F21DDFF1700444B8A /* TestModel.swift */,
 				3ECE662E21DDFEFD00444B8A /* Main.storyboard */,
 				3ECE663121DDFEFE00444B8A /* Assets.xcassets */,
@@ -167,9 +167,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3ECE662D21DDFEFD00444B8A /* ViewController.m in Sources */,
 				3ECE663821DDFEFE00444B8A /* main.m in Sources */,
 				3ECE662A21DDFEFD00444B8A /* AppDelegate.m in Sources */,
+				3E2C7DA321E3354700911DE7 /* ViewController.m in Sources */,
 				3ECE664021DDFF1700444B8A /* TestModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
