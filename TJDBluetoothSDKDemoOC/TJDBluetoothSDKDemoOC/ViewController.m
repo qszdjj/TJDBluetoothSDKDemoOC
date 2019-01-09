@@ -7,14 +7,13 @@
 //
 
 #import "ViewController.h"
-#import <TJDBluetoothSDK/TJDBluetoothSDK.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-
-#define bleSelf [WUBleManager shared]
+#import "FunctionViewController.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *table;
-@property (nonatomic, strong) NSMutableArray<SleepModel *> *dataArray;
+@property (nonatomic, strong) NSMutableArray<SleepModel *> * dataArray;
+@property (nonatomic, strong) NSMutableArray<WUBleModel *> * _Nonnull bleModels;
 
 @end
 
@@ -24,6 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    _dataArray = [NSMutableArray array];
+    _bleModels = [NSMutableArray array];
     _table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _table.delegate = self;
     _table.dataSource = self;
@@ -31,12 +32,24 @@
     
     [self setupNotify];
     
-    NSLog(@"%f", TJDBluetoothSDKVersionNumber);
-    
     //若手环有过滤条件，请填写相应厂商的过滤条件
 //    bleSelf.filterString = @"TJDR";
     [bleSelf setUpManager];
     [WUAppManager setIsDebug:true];
+    
+    NSLog(@"%f, %s", TJDBluetoothSDKVersionNumber, TJDBluetoothSDKVersionString);
+}
+- (IBAction)pressScan:(UIBarButtonItem *)sender {
+    if (bleSelf.isOn) {
+        [self.bleModels removeAllObjects];
+        [bleSelf startFindBleDevices];
+    }
+}
+
+- (IBAction)pressStop:(UIBarButtonItem *)sender {
+    [bleSelf stopFindBleDevices];
+    [self.bleModels removeAllObjects];
+    [self.table reloadData];
 }
 
 - (void)setupNotify {
@@ -44,6 +57,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WUBleManagerNotifyKeys.scan object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WUBleManagerNotifyKeys.connected object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WUBleManagerNotifyKeys.disconnected object:nil];
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.readyToWrite object:nil];
     
@@ -54,27 +68,32 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.read_Sleep object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.read_All_Sleep object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.sysCeLiang_heart object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.devSendCeLiang_heart object:nil];
 }
 
 
 - (void)handleNotify:(NSNotification *)notify {
     if (notify.name == WUBleManagerNotifyKeys.on) {
-        [bleSelf startFindBleDevices];
+        NSLog(@"蓝牙已经打开");
+        // 在这里可以进行重连，连接过就会连接上次保存的设备。
+        [bleSelf reConnectDevice];
     }
     
     if (notify.name == WUBleManagerNotifyKeys.scan) {
+        _bleModels = [NSMutableArray arrayWithArray:bleSelf.bleModels];
         [_table reloadData];
-    }
-    
-    if (notify.name == WUBleManagerNotifyKeys.connected) {
-        NSLog(@"WUBleManagerNotifyKeys.connected");
-        [bleSelf startMeasure:WristbandMeasureType.heart];
     }
     
     if (notify.name == WUBleManagerNotifyKeys.disconnected) {
         NSLog(@"WUBleManagerNotifyKeys.disconnected");
+        [self.navigationController popToRootViewControllerAnimated:true];
+    }
+    
+    if (notify.name == WUBleManagerNotifyKeys.connected) {
+        NSLog(@"WUBleManagerNotifyKeys.connected");
+        //连接之后保存连接设备信息
+        [WUBleModel setModel:bleSelf.activeModel];
+        FunctionViewController *vc = [[FunctionViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:true];
     }
     
     //准备好之后，先获取设备信息
@@ -100,11 +119,18 @@
     
     if (notify.name == WristbandNotifyKeys.read_All_Sport) {
         StepModel *stepModel = notify.object;
-        //这里自己保存数据
-        if ((stepModel.indexCount == 0) || (stepModel.indexCount == stepModel.index + 1)) {
-            NSLog(@"同步历史记步完成");
-            //再同步当前睡眠
-            [bleSelf getSleepWith:0];
+        if (stepModel.day == 6) {
+            if ((stepModel.indexCount == 0) || (stepModel.indexCount == stepModel.index + 1)) {
+                NSLog(@"同步历史记步完成");
+                //再同步当前睡眠
+                [bleSelf getSleepWith:0];
+            }
+        }
+        else {
+            if ((stepModel.indexCount == 0) || (stepModel.indexCount == stepModel.index + 1)) {
+                //再同步昨天的记步
+                [bleSelf aloneGetStepWith:stepModel.day + 1];
+            }
         }
     }
     
@@ -116,25 +142,50 @@
     
     if (notify.name == WristbandNotifyKeys.read_All_Sleep) {
         SleepModel *model = notify.object;
-        if (model.indexCount == 0) {
-            NSLog(@"没有睡眠数据");
-        }
-        else {
-            if (model.index == 0) {
-                [self.dataArray removeAllObjects];
-            }
-            [self.dataArray addObject:model];
-            
-            if (model.indexCount == model.index + 1) {
-                NSArray *timeSleepArray = [SleepTimeModel sleepTime:self.dataArray];
-                NSArray *detailSleepArray = [SleepTimeModel detailSleep:timeSleepArray];
-                int wake = [detailSleepArray[0] intValue];
-                int light = [detailSleepArray[1] intValue];
-                int deep = [detailSleepArray[2] intValue];
-                NSLog(@"同步历史睡眠完成：%d , %d , %d", wake, light, deep);
-                
+        if (model.day == 6) {
+            if (model.indexCount == 0) {
+                NSLog(@"没有睡眠数据");
                 //再同步历史心率
                 [bleSelf aloneGetMeasure:WristbandMeasureType.heart];
+            }
+            else {
+                if (model.index == 0) {
+                    [self.dataArray removeAllObjects];
+                }
+                [self.dataArray addObject:model];
+                
+                if (model.indexCount == model.index + 1) {
+                    NSArray *timeSleepArray = [SleepTimeModel sleepTime:self.dataArray];
+                    NSArray *detailSleepArray = [SleepTimeModel detailSleep:timeSleepArray];
+                    int wake = [detailSleepArray[0] intValue];
+                    int light = [detailSleepArray[1] intValue];
+                    int deep = [detailSleepArray[2] intValue];
+                    NSLog(@"同步历史睡眠完成：%d , %d , %d, day: %d", wake, light, deep, (int)model.day);
+                    //再同步历史心率
+                    [bleSelf aloneGetMeasure:WristbandMeasureType.heart];
+                }
+            }
+        }
+        else {
+            if (model.indexCount == 0) {
+                NSLog(@"没有睡眠数据");
+                [bleSelf aloneGetSleepWith:model.day + 1];
+            }
+            else {
+                if (model.index == 0) {
+                    [self.dataArray removeAllObjects];
+                }
+                [self.dataArray addObject:model];
+                
+                if (model.indexCount == model.index + 1) {
+                    NSArray *timeSleepArray = [SleepTimeModel sleepTime:self.dataArray];
+                    NSArray *detailSleepArray = [SleepTimeModel detailSleep:timeSleepArray];
+                    int wake = [detailSleepArray[0] intValue];
+                    int light = [detailSleepArray[1] intValue];
+                    int deep = [detailSleepArray[2] intValue];
+                    NSLog(@"同步历史睡眠完成：%d , %d , %d, day: %d", wake, light, deep, (int)model.day);
+                    [bleSelf aloneGetSleepWith:model.day + 1];
+                }
             }
         }
     }
@@ -148,32 +199,31 @@
 }
 
 
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return bleSelf.bleModels.count;
+    return self.bleModels.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-    WUBleModel *model = bleSelf.bleModels[indexPath.row];
+    WUBleModel *model = self.bleModels[indexPath.row];
     cell.textLabel.text = model.name;
     cell.detailTextLabel.text = model.mac;
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 55;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:true];
     [bleSelf stopFindBleDevices];
-    WUBleModel *model = bleSelf.bleModels[indexPath.row];
-    bleSelf.activeModel = model;
-    [WUBleModel setModel:model];
-    CBPeripheral *peripheral = [bleSelf retrievePeripheralWith:model.uuidString];
-    [bleSelf connectBleDevice:peripheral];
-    
+    WUBleModel *model = self.bleModels[indexPath.row];
+    [bleSelf connectBleDeviceWithModel:model];
 }
 
 

@@ -186,7 +186,9 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK9DataModel")
 @interface DataModel : NSObject
+/// 蓝牙在iOS系统上的唯一标识符，用作生成蓝牙实例
 @property (nonatomic, copy) NSString * _Nonnull uuidString;
+/// 设备mac地址
 @property (nonatomic, copy) NSString * _Nonnull mac;
 /// 时间戳 单位：秒
 @property (nonatomic) NSInteger timeStamp;
@@ -209,13 +211,21 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10BloodModel")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK14DisplayUiModel")
 @interface DisplayUiModel : NSObject
+/// 记步页面
 @property (nonatomic) BOOL isStep;
+/// 距离页面
 @property (nonatomic) BOOL isDistance;
+/// 卡路里页面
 @property (nonatomic) BOOL isCal;
+/// 心率页面
 @property (nonatomic) BOOL isHeart;
+/// 血压页面
 @property (nonatomic) BOOL isBlood;
+/// 查找手机页面
 @property (nonatomic) BOOL isFindPhone;
+/// mac地址页面
 @property (nonatomic) BOOL isMac;
+/// 关机页面
 @property (nonatomic) BOOL isTurnOff;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -231,15 +241,25 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10DrinkModel")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK17FunctionListModel")
 @interface FunctionListModel : NSObject
+/// 设备是否有关机功能
 @property (nonatomic) BOOL hasTurnOff;
+/// 设备是否有记步功能
 @property (nonatomic) BOOL hasStep;
+/// 设备是否有心率功能
 @property (nonatomic) BOOL hasHeart;
+/// 设备是否有血压功能
 @property (nonatomic) BOOL hasBlood;
+/// 设备是否有抬手亮屏功能
 @property (nonatomic) BOOL hasLightScreen;
+/// 设备是否有久坐提醒功能
 @property (nonatomic) BOOL hasLongSit;
+/// 设备是否有喝水提醒功能
 @property (nonatomic) BOOL hasDrink;
+/// 设备是否有摇一摇拍照功能
 @property (nonatomic) BOOL hasTakePhoto;
+/// 设备是否有防丢提醒功能
 @property (nonatomic) BOOL hasAntiLost;
+/// 设备是否有查找手机功能
 @property (nonatomic) BOOL hasFindPhone;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -247,12 +267,17 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK17FunctionListModel")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK19FunctionSwitchModel")
 @interface FunctionSwitchModel : NSObject
+/// 抬手亮屏开关
 @property (nonatomic) BOOL isLightScreen;
+/// 久坐提醒开关
 @property (nonatomic) BOOL isLongSit;
+/// 喝水提醒开关
 @property (nonatomic) BOOL isDrink;
+/// 摇摇拍照开关
 @property (nonatomic) BOOL isTakePhoto;
-/// 电话挂断
+/// 电话挂断开关
 @property (nonatomic) BOOL isCallDown;
+/// 防丢提醒开关
 @property (nonatomic) BOOL isAntiLost;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -281,14 +306,14 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK12LongSitModel")
 
 
 @interface NSObject (SWIFT_EXTENSION(TJDBluetoothSDK))
-/// 保存对象的所有属性数据
+/// 保存对象的所有属性数据 使用 USerDefault
 /// \param model 要保存的对象
 ///
 + (void)setModel:(id _Nonnull)model;
 /// 获取对象的所有数据
 ///
 /// returns:
-/// <#return value description#>
+/// AnyObject
 + (id _Nonnull)getModel SWIFT_WARN_UNUSED_RESULT;
 @end
 
@@ -307,11 +332,11 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10SleepModel")
 /// 1, 2, 3 对应清醒，浅睡，深睡
 @property (nonatomic) NSInteger state;
 /// 获得睡眠分段数据信息
-/// \param array <#array description#>
+/// \param array 一天的睡眠SleepModel
 ///
 ///
 /// returns:
-/// <#return value description#>
+/// [SleepTimeModel]
 + (NSArray<SleepTimeModel *> * _Nonnull)sleepTime:(NSArray<SleepModel *> * _Nonnull)array SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -321,12 +346,14 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK14SleepTimeModel")
 @interface SleepTimeModel : SleepModel
 @property (nonatomic) NSInteger sleepTime;
 /// 返回一天的详细 清醒时间，浅睡时间，深睡时间  单位：分钟
+/// \param array 传入「sleepTime(_ array: [SleepModel]) -> [SleepTimeModel]」的返回结果
+///
 ///
 /// returns:
 /// array [wake, light, deep]
 + (NSArray<NSNumber *> * _Nonnull)detailSleep:(NSArray<SleepTimeModel *> * _Nonnull)array SWIFT_WARN_UNUSED_RESULT;
-/// <#Description#>
-/// \param array <#array description#>
+/// 睡眠质量获取
+/// \param array 传入「detailSleep(_ array: [SleepTimeModel]) -> [Int]」的返回结果
 ///
 ///
 /// returns:
@@ -382,6 +409,10 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUAppManager
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isDebug;)
 + (BOOL)isDebug SWIFT_WARN_UNUSED_RESULT;
 + (void)setIsDebug:(BOOL)value;
+/// 打印对象的数据结构
+/// \param any Any
+///
++ (void)testPrint:(id _Nonnull)any;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -389,13 +420,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isDebug;)
 @class WUBleModel;
 @class WUUserInfo;
 @protocol WristbandSetDelegate;
-@class CBCentralManager;
-@class NSNumber;
-@class CBService;
-@class CBCharacteristic;
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK12WUBleManager")
-@interface WUBleManager : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate>
+@interface WUBleManager : NSObject
 /// 单例
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager * _Nonnull shared;)
 + (WUBleManager * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
@@ -407,7 +434,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 @property (nonatomic, strong) WUBleModel * _Nonnull activeModel;
 /// 蓝牙搜索后的集合
 @property (nonatomic, copy) NSArray<WUBleModel *> * _Nonnull bleModels;
+/// 蓝牙是否开启
 @property (nonatomic) BOOL isOn;
+/// 蓝牙是否连接
 @property (nonatomic, readonly) BOOL isConnected;
 /// 计步数据
 @property (nonatomic) NSInteger step;
@@ -417,6 +446,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 @property (nonatomic) NSInteger sleep;
 /// 电池和充电状态
 @property (nonatomic) NSInteger batteryLevel;
+/// 是否进入相机界面
+@property (nonatomic) BOOL isEnterCamera;
 /// 该变量接收了手环传来的用户信息。
 @property (nonatomic, strong) WUUserInfo * _Nonnull userInfo;
 /// 该变量接收了手环传来的设备上是否要显示的UI。
@@ -438,15 +469,11 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 - (void)startFindBleDevices;
 /// 停止查找设备
 - (void)stopFindBleDevices;
-/// 连接设备
-/// \param peripheral CBPeripheral
-///
-- (void)connectBleDevice:(CBPeripheral * _Nullable)peripheral;
-/// 断开设备
-/// \param peripheral CBPeripheral
-///
-- (void)disconnectBleDevice:(CBPeripheral * _Nullable)peripheral;
-/// 重连设备，是保存在activeModel里的uuidString
+- (void)connectBleDevice:(CBPeripheral * _Nullable)peripheral SWIFT_AVAILABILITY(ios,deprecated=1.1,message="准备废弃，请用connectBleDevice(model: WUBleModel)");
+- (void)disconnectBleDevice:(CBPeripheral * _Nullable)peripheral SWIFT_AVAILABILITY(ios,deprecated=1.1,message="准备废弃，请用disconnectBleDevice()");
+- (void)connectBleDeviceWithModel:(WUBleModel * _Nonnull)model SWIFT_AVAILABILITY(ios,introduced=1.1);
+- (void)disconnectBleDevice SWIFT_AVAILABILITY(ios,introduced=1.1);
+/// 重连设备，在连接过一次设备后并保存了WUBleModel，下次直接发起连接
 - (void)reConnectDevice;
 /// 通过uuidString获取蓝牙对象
 /// \param uuidString String
@@ -455,6 +482,14 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 /// returns:
 /// 蓝牙对象
 - (CBPeripheral * _Nullable)retrievePeripheralWith:(NSString * _Nonnull)uuidString SWIFT_WARN_UNUSED_RESULT;
+@end
+
+@class CBCentralManager;
+@class NSNumber;
+@class CBService;
+@class CBCharacteristic;
+
+@interface WUBleManager (SWIFT_EXTENSION(TJDBluetoothSDK)) <CBCentralManagerDelegate, CBPeripheralDelegate>
 /// 以下方法不要使用, 系统强制要public的方法 ！*************************************** !
 /// CBCentralManagerDelegate
 - (void)centralManagerDidUpdateState:(CBCentralManager * _Nonnull)central;
@@ -564,12 +599,13 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUBleModel")
 @property (nonatomic, copy) NSString * _Nonnull hardwareVersion;
 /// 固件版本
 @property (nonatomic, copy) NSString * _Nonnull firmwareVersion;
-/// 厂商数据
+/// 厂商数据 ascii字符串，用于产商识别
 @property (nonatomic, copy) NSString * _Nonnull vendorNumberASCII;
+/// 厂商数据 16进制字符串，用于本公司固件升级服务器请求使用
 @property (nonatomic, copy) NSString * _Nonnull vendorNumberString;
 /// 内部型号
 @property (nonatomic, copy) NSString * _Nonnull internalNumber;
-/// YWQ 公司专用设备id
+/// YWQ 公司专用设备id, 其他公司不可用
 @property (nonatomic, copy) NSString * _Nonnull deviceID;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -611,7 +647,6 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK6WUDate")
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUUserInfo")
 @interface WUUserInfo : NSObject
-@property (nonatomic) NSInteger uid;
 @property (nonatomic, copy) NSString * _Nonnull name;
 @property (nonatomic) NSInteger sex;
 @property (nonatomic) NSInteger age;
@@ -619,7 +654,9 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUUserInfo")
 @property (nonatomic) double weight;
 @property (nonatomic) NSInteger unit;
 @property (nonatomic) NSInteger timeUnit;
+/// 步数 目标数
 @property (nonatomic) NSInteger stepGoal;
+/// 生日 初始值 2000-01-01
 @property (nonatomic) NSInteger birthday;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_DEPRECATED_MSG("-init is unavailable");
