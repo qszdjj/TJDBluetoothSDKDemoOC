@@ -163,7 +163,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 # define SWIFT_DEPRECATED_OBJC(Msg) SWIFT_DEPRECATED_MSG(Msg)
 #endif
 #if __has_feature(modules)
-@import CoreBluetooth;
 @import Foundation;
 @import ObjectiveC;
 #endif
@@ -416,7 +415,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class) BOOL isDebug;)
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class CBPeripheral;
 @class WUBleModel;
 @class WUUserInfo;
 @protocol WristbandSetDelegate;
@@ -428,14 +426,12 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 + (WUBleManager * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
 /// 如果要过滤设备，请在{startFindBleDevices}之前设置一个客户已知的字符串, 不设置默认只搜索本公司的设备
 @property (nonatomic, copy) NSString * _Nonnull filterString;
-/// 系统里的蓝牙对象
-@property (nonatomic, strong) CBPeripheral * _Nullable activePeripheral;
 /// 自己封装的蓝牙对象
 @property (nonatomic, strong) WUBleModel * _Nonnull activeModel;
-/// 蓝牙搜索后的集合
+/// 蓝牙搜索后的设备列表
 @property (nonatomic, copy) NSArray<WUBleModel *> * _Nonnull bleModels;
 /// 蓝牙是否开启
-@property (nonatomic) BOOL isOn;
+@property (nonatomic) BOOL isBluetoothOn;
 /// 蓝牙是否连接
 @property (nonatomic, readonly) BOOL isConnected;
 /// 计步数据
@@ -461,44 +457,19 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 /// 久坐提醒的时间间隔。
 @property (nonatomic, strong) LongSitModel * _Nonnull longSitModel;
 @property (nonatomic, strong) id <WristbandSetDelegate> _Nullable wristbandDelegate;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_DEPRECATED_MSG("-init is unavailable");
+/// 当前发送的ota包序号
+@property (nonatomic) NSUInteger otaPackIndex;
 /// 建立蓝牙管理   ！**************** 只调用一次 ************   ！
-- (void)setUpManager;
+- (void)setupManager;
 /// 开始搜索设备 回调通过 scan通知后 查看 bleModels。
 - (void)startFindBleDevices;
 /// 停止查找设备
 - (void)stopFindBleDevices;
-- (void)connectBleDevice:(CBPeripheral * _Nullable)peripheral SWIFT_AVAILABILITY(ios,deprecated=1.1,message="准备废弃，请用connectBleDevice(model: WUBleModel)");
-- (void)disconnectBleDevice:(CBPeripheral * _Nullable)peripheral SWIFT_AVAILABILITY(ios,deprecated=1.1,message="准备废弃，请用disconnectBleDevice()");
 - (void)connectBleDeviceWithModel:(WUBleModel * _Nonnull)model SWIFT_AVAILABILITY(ios,introduced=1.1);
 - (void)disconnectBleDevice SWIFT_AVAILABILITY(ios,introduced=1.1);
 /// 重连设备，在连接过一次设备后并保存了WUBleModel，下次直接发起连接
 - (void)reConnectDevice;
-/// 通过uuidString获取蓝牙对象
-/// \param uuidString String
-///
-///
-/// returns:
-/// 蓝牙对象
-- (CBPeripheral * _Nullable)retrievePeripheralWith:(NSString * _Nonnull)uuidString SWIFT_WARN_UNUSED_RESULT;
-@end
-
-@class CBCentralManager;
-@class NSNumber;
-@class CBService;
-@class CBCharacteristic;
-
-@interface WUBleManager (SWIFT_EXTENSION(TJDBluetoothSDK)) <CBCentralManagerDelegate, CBPeripheralDelegate>
-/// 以下方法不要使用, 系统强制要public的方法 ！*************************************** !
-/// CBCentralManagerDelegate
-- (void)centralManagerDidUpdateState:(CBCentralManager * _Nonnull)central;
-- (void)centralManager:(CBCentralManager * _Nonnull)central didDiscoverPeripheral:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *, id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI;
-- (void)centralManager:(CBCentralManager * _Nonnull)central didConnectPeripheral:(CBPeripheral * _Nonnull)peripheral;
-- (void)centralManager:(CBCentralManager * _Nonnull)central didDisconnectPeripheral:(CBPeripheral * _Nonnull)peripheral error:(NSError * _Nullable)error;
-- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverServices:(NSError * _Nullable)error;
-- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverCharacteristicsForService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
-- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
 
@@ -561,9 +532,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 ///
 - (void)aloneGetMeasure:(uint8_t)type;
 /// 开始测量
-/// \param type WristbandMeasureType 结构体内变量
+/// \param type WristbandMeasureType.heart
 ///
 - (void)startMeasure:(uint8_t)type;
+/// ota开始指令
+- (void)beginOTA;
+/// ota结束指令
+- (void)endOTA;
+/// 发送ota包
+- (void)sendOta:(NSData * _Nonnull)data;
 @end
 
 
@@ -578,7 +555,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 /// 蓝牙搜索回调通知
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _Nonnull scan;)
 + (NSNotificationName _Nonnull)scan SWIFT_WARN_UNUSED_RESULT;
-/// 蓝牙连接回调通知
+/// 蓝牙连接失败回调通知 系统提供的连接方法不存在超时，调用连接后会一直尝试连接,如需要，请自行设计
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _Nonnull connected;)
 + (NSNotificationName _Nonnull)connected SWIFT_WARN_UNUSED_RESULT;
 /// 蓝牙断开回调通知
@@ -590,10 +567,17 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 
 SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUBleModel")
 @interface WUBleModel : NSObject
+/// 增加是否绑定字段，方便开发者自行设置绑定，自行连接使用
+@property (nonatomic) BOOL isBond;
+/// 苹果系统里设备的唯一标识符
 @property (nonatomic, copy) NSString * _Nonnull uuidString;
+/// 设备名
 @property (nonatomic, copy) NSString * _Nonnull name;
+/// 广播名
 @property (nonatomic, copy) NSString * _Nonnull localName;
+/// rssi 搜索的设备广播强度，可用来大致判断距离
 @property (nonatomic) NSInteger rssi;
+/// 设备mac地址
 @property (nonatomic, copy) NSString * _Nonnull mac;
 /// 硬件版本
 @property (nonatomic, copy) NSString * _Nonnull hardwareVersion;
@@ -605,7 +589,7 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUBleModel")
 @property (nonatomic, copy) NSString * _Nonnull vendorNumberString;
 /// 内部型号
 @property (nonatomic, copy) NSString * _Nonnull internalNumber;
-/// YWQ 公司专用设备id, 其他公司不可用
+/// YWQ 公司专用设备id, 其他公司无
 @property (nonatomic, copy) NSString * _Nonnull deviceID;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end

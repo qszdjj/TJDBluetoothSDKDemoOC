@@ -34,22 +34,25 @@
     
     //若手环有过滤条件，请填写相应厂商的过滤条件
 //    bleSelf.filterString = @"TJDR";
-    [bleSelf setUpManager];
+    [bleSelf setupManager];
     [WUAppManager setIsDebug:true];
-    
-    NSLog(@"%f, %s", TJDBluetoothSDKVersionNumber, TJDBluetoothSDKVersionString);
 }
+
 - (IBAction)pressScan:(UIBarButtonItem *)sender {
-    if (bleSelf.isOn) {
+    if (bleSelf.isBluetoothOn) {
         [self.bleModels removeAllObjects];
         [bleSelf startFindBleDevices];
+    }
+    else {
+        NSLog(@"未打开蓝牙");
     }
 }
 
 - (IBAction)pressStop:(UIBarButtonItem *)sender {
-    [bleSelf stopFindBleDevices];
-    [self.bleModels removeAllObjects];
-    [self.table reloadData];
+    [bleSelf disconnectBleDevice];
+//    [bleSelf stopFindBleDevices];
+//    [self.bleModels removeAllObjects];
+//    [self.table reloadData];
 }
 
 - (void)setupNotify {
@@ -75,7 +78,9 @@
     if (notify.name == WUBleManagerNotifyKeys.on) {
         NSLog(@"蓝牙已经打开");
         // 在这里可以进行重连，连接过就会连接上次保存的设备。
-        [bleSelf reConnectDevice];
+        if (bleSelf.activeModel.isBond) {
+            [bleSelf reConnectDevice];
+        }
     }
     
     if (notify.name == WUBleManagerNotifyKeys.scan) {
@@ -91,6 +96,7 @@
     if (notify.name == WUBleManagerNotifyKeys.connected) {
         NSLog(@"WUBleManagerNotifyKeys.connected");
         //连接之后保存连接设备信息
+        bleSelf.activeModel.isBond = true;
         [WUBleModel setModel:bleSelf.activeModel];
         FunctionViewController *vc = [[FunctionViewController alloc] init];
         [self.navigationController pushViewController:vc animated:true];
@@ -103,6 +109,7 @@
         [bleSelf getBatteryForWristband];
         [bleSelf getDeviceInfoForWristband];
         [bleSelf getUserinfoForWristband];
+        // 给手环设置时间
         [bleSelf setTimeForWristband];
         
         //然后同步手环的数据 。。。。。。
@@ -112,13 +119,14 @@
     }
     
     if (notify.name == WristbandNotifyKeys.read_Sport) {
-        NSLog(@"%ld 步, %ld cal, %ld m", (long)bleSelf.step, bleSelf.cal, bleSelf.distance);
+        NSLog(@"%d 步, %d cal, %d m", (int)bleSelf.step, (int)bleSelf.cal, (int)bleSelf.distance);
         //再获取手环的历史记步
         [bleSelf aloneGetStepWith:0];
     }
     
     if (notify.name == WristbandNotifyKeys.read_All_Sport) {
         StepModel *stepModel = notify.object;
+        // 最后一天睡眠
         if (stepModel.day == 6) {
             if ((stepModel.indexCount == 0) || (stepModel.indexCount == stepModel.index + 1)) {
                 NSLog(@"同步历史记步完成");
@@ -135,7 +143,7 @@
     }
     
     if (notify.name == WristbandNotifyKeys.read_Sleep) {
-        NSLog(@"%ld", bleSelf.sleep);
+        NSLog(@"%d", (int)bleSelf.sleep);
         //再同步历史睡眠
         [bleSelf aloneGetSleepWith:0];
     }
@@ -212,6 +220,7 @@
     WUBleModel *model = self.bleModels[indexPath.row];
     cell.textLabel.text = model.name;
     cell.detailTextLabel.text = model.mac;
+    
     return cell;
 }
 

@@ -25,7 +25,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setupNotify];
-    titleArray_ = @[@"设备相关功能开关", @"心率测量", @"血压测量", @"修改用户信息"];
+    titleArray_ = @[@"设备相关功能开关", @"心率测量（点击测量）", @"血压测量（点击测量）", @"修改用户信息"];
     
     _table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _table.delegate = self;

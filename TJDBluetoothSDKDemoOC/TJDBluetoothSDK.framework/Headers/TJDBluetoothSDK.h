@@ -26,4 +26,18 @@ FOUNDATION_EXPORT const unsigned char TJDBluetoothSDKVersionString[];
  2.修复FunctionSwitchModel发送错误
  3.修复DisplayUiModel发送错误
  
+ v 1.2
+ WUBleManager：
+ 1.将属性 isOn改为isBluetoothOn
+ 2.将方法 setUpManager改为setupManager
+ 3.移除 func connectBleDevice(_ peripheral: CBPeripheral?)
+ 4.移除 func disconnectBleDevice(_ peripheral: CBPeripheral?)
+ 5.增加OTA升级（固件升级）
+
+ WUBleModel：
+ 1.增加字段 isBond，方便开发者自行保存绑定操作
+ 
+ 1.封装了系统蓝牙对象及回调
+ 2.优化了打印内容
+ 
  */
