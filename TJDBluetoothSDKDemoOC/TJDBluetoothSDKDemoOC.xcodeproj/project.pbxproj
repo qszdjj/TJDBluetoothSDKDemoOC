@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3E128FED21F6B7920099B811 /* TJDBluetoothSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E128FEC21F6B7920099B811 /* TJDBluetoothSDK.framework */; };
-		3E128FEE21F6B7920099B811 /* TJDBluetoothSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E128FEC21F6B7920099B811 /* TJDBluetoothSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3E128FF021F6BF1D0099B811 /* TJDBluetoothSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E128FEF21F6BF1D0099B811 /* TJDBluetoothSDK.framework */; };
+		3E128FF121F6BF1D0099B811 /* TJDBluetoothSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E128FEF21F6BF1D0099B811 /* TJDBluetoothSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3E2C7DA321E3354700911DE7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C7DA121E3354700911DE7 /* ViewController.m */; };
 		3E30B6B021E4376B00BD2126 /* FunctionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E30B6AF21E4376B00BD2126 /* FunctionViewController.m */; };
 		3E30B6C321E4708700BD2126 /* SwitchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E30B6C221E4708700BD2126 /* SwitchViewController.m */; };
@@ -26,7 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3E128FEE21F6B7920099B811 /* TJDBluetoothSDK.framework in Embed Frameworks */,
+				3E128FF121F6BF1D0099B811 /* TJDBluetoothSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34,7 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3E128FEC21F6B7920099B811 /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TJDBluetoothSDK.framework; sourceTree = "<group>"; };
+		3E128FEF21F6BF1D0099B811 /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TJDBluetoothSDK.framework; sourceTree = "<group>"; };
 		3E2C7DA121E3354700911DE7 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		3E2C7DA221E3354700911DE7 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		3E30B6AE21E4376B00BD2126 /* FunctionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FunctionViewController.h; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E128FED21F6B7920099B811 /* TJDBluetoothSDK.framework in Frameworks */,
+				3E128FF021F6BF1D0099B811 /* TJDBluetoothSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,7 +68,7 @@
 		3ECE661C21DDFEFD00444B8A = {
 			isa = PBXGroup;
 			children = (
-				3E128FEC21F6B7920099B811 /* TJDBluetoothSDK.framework */,
+				3E128FEF21F6BF1D0099B811 /* TJDBluetoothSDK.framework */,
 				3ECE662721DDFEFD00444B8A /* TJDBluetoothSDKDemoOC */,
 				3ECE662621DDFEFD00444B8A /* Products */,
 			);
