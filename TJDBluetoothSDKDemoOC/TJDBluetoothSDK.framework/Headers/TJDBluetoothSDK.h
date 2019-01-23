@@ -40,4 +40,5 @@ FOUNDATION_EXPORT const unsigned char TJDBluetoothSDKVersionString[];
  1.封装了系统蓝牙对象及回调
  2.优化了打印内容
  
+ 3.增加了英文注释
  */
