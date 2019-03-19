@@ -17,6 +17,14 @@
 @property (nonatomic, strong) HeartModel *heartModel;
 @property (nonatomic, strong) BloodModel *bloodModel;
 
+@property (nonatomic, strong) NSData *localData;
+@property (nonatomic, assign) int location;
+@property (nonatomic, assign) int count;
+@property (nonatomic, strong) NSTimer *otaTimer;
+@property (nonatomic, strong) NSString *filePath;
+@property (nonatomic, assign) BOOL isStartOTA;
+@property (nonatomic, assign) float progress;
+
 @end
 
 @implementation FunctionViewController
@@ -25,7 +33,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setupNotify];
-    titleArray_ = @[@"设备相关功能开关", @"心率测量（点击测量）", @"血压测量（点击测量）", @"修改用户信息"];
+    titleArray_ = @[@"设备相关功能开关", @"心率测量（点击测量）", @"血压测量（点击测量）", @"修改用户信息", @"OTA升级\n（固件请从相关服务器\n或供应商处获取）", @"查找手环"];
     
     _table = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _table.delegate = self;
@@ -104,6 +112,10 @@
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%d/%d", (int)_bloodModel.max, (int)_bloodModel.min];
     }
     
+    if (indexPath.row == 4) {
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%f", _progress];
+        cell.textLabel.numberOfLines = 3;
+    }
     return cell;
 }
 
@@ -132,10 +144,86 @@
         // 修改用户信息 然后发送给蓝牙设备
         [bleSelf setUserinfoForWristband:model];
     }
+    
+    if (indexPath.row == 4) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"SmartBand2.0" ofType:@"bin"];
+        [self startOTA:path];
+    }
+    
+    if (indexPath.row == 5) {
+        [bleSelf findDeviceForWristband];
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 4) {
+        return 100;
+    }
     return 55;
+}
+
+//MARK: ota
+
+- (void)startOTA:(NSString *)path {
+    NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+    if (data.length <= 0) {
+        return;
+    }
+    
+    [bleSelf beginOTA];
+    bleSelf.otaPackIndex = 0;
+    _localData = data;
+//    NSLog(@"%@", _localData);
+    
+    if (self.localData.length%16) {
+        self.count = (int)self.localData.length/16 + 1;
+    }
+    else {
+        self.count = (int)self.localData.length/16;
+    }
+    self.isStartOTA = true;
+    [self performSelector:@selector(sendDataPack) withObject:nil afterDelay:1];
+}
+
+- (void)sendDataPack {
+    [self.otaTimer invalidate];
+    self.otaTimer = nil;
+    
+    if (!bleSelf.isConnected) {
+        return;
+    }
+    
+    //包的位置
+    int packLoction = 0;
+    int packLength = 0;
+    if (bleSelf.otaPackIndex < self.count) {
+        if (bleSelf.otaPackIndex == self.count - 1) {
+            packLength = (int)(self.localData.length - bleSelf.otaPackIndex * 16);
+        }
+        else {
+            packLength = 16;
+        }
+        packLoction = (int)bleSelf.otaPackIndex*16;
+        NSRange range = NSMakeRange(packLoction, packLength);
+        NSData *sendData = [self.localData subdataWithRange:range];
+        [bleSelf sendOta:sendData];
+        _progress = (float)bleSelf.otaPackIndex/self.count;
+        [self.table reloadData];
+    }
+    else if (bleSelf.otaPackIndex == self.count) {
+        [bleSelf endOTA];
+        packLength = 0;
+        self.count = 0;
+        self.location = 0;
+        _progress = 1;
+        self.isStartOTA = false;
+        [self.table reloadData];
+        return;
+    }
+    
+    if (self.isStartOTA) {
+        self.otaTimer = [NSTimer scheduledTimerWithTimeInterval:0.02 target:self selector:@selector(sendDataPack) userInfo:nil repeats:true];
+    }
 }
 
 @end

@@ -41,4 +41,12 @@ FOUNDATION_EXPORT const unsigned char TJDBluetoothSDKVersionString[];
  2.优化了打印内容
  
  3.增加了英文注释
+ 
+ v 1.3
+ 
+ 1.增加ANCS苹果通知开关
+ 2.增加苹果通知开关的模型 AppleNotifyModel
+ 3.FunctionListModel 增加是否含有苹果通知开关的属性 hasANCSSwitch
+ 4.增加睡眠质量
  */
+

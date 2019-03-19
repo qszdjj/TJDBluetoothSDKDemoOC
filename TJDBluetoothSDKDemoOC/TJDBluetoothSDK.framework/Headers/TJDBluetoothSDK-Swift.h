@@ -183,6 +183,20 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 
+SWIFT_CLASS("_TtC15TJDBluetoothSDK16AppleNotifyModel")
+@interface AppleNotifyModel : NSObject
+@property (nonatomic) BOOL isCall;
+@property (nonatomic) BOOL isMessage;
+@property (nonatomic) BOOL isQQ;
+@property (nonatomic) BOOL isWechat;
+@property (nonatomic) BOOL isFacebook;
+@property (nonatomic) BOOL isTwitter;
+@property (nonatomic) BOOL isLinkedin;
+@property (nonatomic) BOOL isWhatapp;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
 SWIFT_CLASS("_TtC15TJDBluetoothSDK9DataModel")
 @interface DataModel : NSObject
 /// 蓝牙在iOS系统上的唯一标识符，用作生成蓝牙实例
@@ -288,6 +302,8 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK17FunctionListModel")
 /// 设备是否有查找手机功能
 /// Does the device have a function to find the phone?
 @property (nonatomic) BOOL hasFindPhone;
+/// 设备是否有苹果通知开关功能
+@property (nonatomic) BOOL hasANCSSwitch;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -340,8 +356,6 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK12LongSitModel")
 @end
 
 
-
-
 @interface NSObject (SWIFT_EXTENSION(TJDBluetoothSDK))
 /// 保存对象的所有属性数据 使用 USerDefault
 /// Save all attribute data of an object
@@ -355,6 +369,8 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK12LongSitModel")
 /// AnyObject
 + (id _Nonnull)getModel SWIFT_WARN_UNUSED_RESULT;
 @end
+
+
 
 
 
@@ -396,6 +412,13 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK14SleepTimeModel")
 /// returns:
 /// array [wake, light, deep]
 + (NSArray<NSNumber *> * _Nonnull)detailSleep:(NSArray<SleepTimeModel *> * _Nonnull)array SWIFT_WARN_UNUSED_RESULT;
+/// 睡眠质量获取
+/// \param array 传入「detailSleep(_ array: [SleepTimeModel]) -> [Int]」的返回结果
+///
+///
+/// returns:
+/// 0 - 3对应 无 一般，良好，优秀
++ (NSInteger)sleepQuality:(NSArray<NSNumber *> * _Nonnull)array SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -524,6 +547,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 /// 久坐提醒的时间间隔。
 /// The interval between sedentary reminders.
 @property (nonatomic, strong) LongSitModel * _Nonnull longSitModel;
+/// 苹果通知开关
+@property (nonatomic, strong) AppleNotifyModel * _Nonnull notifyModel;
 @property (nonatomic, strong) id <WristbandSetDelegate> _Nullable wristbandDelegate;
 /// 当前发送的ota包序号
 /// The currently sent ota package serial number
@@ -617,6 +642,8 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) WUBleManager
 /// \param type WristbandMeasureType.heart
 ///
 - (void)startMeasure:(uint8_t)type;
+- (void)getAncsSwitchForWristband;
+- (void)setAncsSwitchForWristband:(AppleNotifyModel * _Nonnull)model;
 /// ota开始指令
 /// Ota start command
 - (void)beginOTA;
@@ -867,6 +894,9 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _
 /// Synchronize the phone system language 1 Chinese, 0 English
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _Nonnull syncLanguage;)
 + (NSNotificationName _Nonnull)syncLanguage SWIFT_WARN_UNUSED_RESULT;
+/// 苹果ancs开关
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) NSNotificationName _Nonnull ancsSwitch;)
++ (NSNotificationName _Nonnull)ancsSwitch SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -920,6 +950,8 @@ SWIFT_PROTOCOL("_TtP15TJDBluetoothSDK20WristbandSetDelegate_")
 /// \param type WristbandMeasureType.heart or  blood
 ///
 - (void)didSetWristbandWithStartMeasure:(BOOL)isSuccess type:(uint8_t)type;
+/// 苹果推送开关设置
+- (void)didSetWristbandWithAncsSwitch:(BOOL)isSuccess;
 @end
 
 #if __has_attribute(external_source_symbol)

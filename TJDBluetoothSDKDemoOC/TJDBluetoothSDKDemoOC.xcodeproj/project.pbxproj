@@ -10,8 +10,9 @@
 		3E2C7DA321E3354700911DE7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E2C7DA121E3354700911DE7 /* ViewController.m */; };
 		3E30B6B021E4376B00BD2126 /* FunctionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E30B6AF21E4376B00BD2126 /* FunctionViewController.m */; };
 		3E30B6C321E4708700BD2126 /* SwitchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E30B6C221E4708700BD2126 /* SwitchViewController.m */; };
-		3E760C2321F86F78009E4FD8 /* TJDBluetoothSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E760C2221F86F78009E4FD8 /* TJDBluetoothSDK.framework */; };
-		3E760C2421F86F78009E4FD8 /* TJDBluetoothSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E760C2221F86F78009E4FD8 /* TJDBluetoothSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3E4FAB942240F2CF000508AB /* SmartBand2.0.bin in Resources */ = {isa = PBXBuildFile; fileRef = 3E4FAB932240F2CF000508AB /* SmartBand2.0.bin */; };
+		3E4FABAF22411290000508AB /* TJDBluetoothSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E4FABAE22411290000508AB /* TJDBluetoothSDK.framework */; };
+		3E4FABB022411290000508AB /* TJDBluetoothSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3E4FABAE22411290000508AB /* TJDBluetoothSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3ECE662A21DDFEFD00444B8A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ECE662921DDFEFD00444B8A /* AppDelegate.m */; };
 		3ECE663021DDFEFD00444B8A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3ECE662E21DDFEFD00444B8A /* Main.storyboard */; };
 		3ECE663221DDFEFE00444B8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3ECE663121DDFEFE00444B8A /* Assets.xcassets */; };
@@ -26,7 +27,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				3E760C2421F86F78009E4FD8 /* TJDBluetoothSDK.framework in Embed Frameworks */,
+				3E4FABB022411290000508AB /* TJDBluetoothSDK.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -41,7 +42,9 @@
 		3E30B6C121E4708700BD2126 /* SwitchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwitchViewController.h; sourceTree = "<group>"; };
 		3E30B6C221E4708700BD2126 /* SwitchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SwitchViewController.m; sourceTree = "<group>"; };
 		3E30B6C721E47F7E00BD2126 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		3E760C2221F86F78009E4FD8 /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TJDBluetoothSDK.framework; sourceTree = "<group>"; };
+		3E4FAB932240F2CF000508AB /* SmartBand2.0.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = SmartBand2.0.bin; sourceTree = "<group>"; };
+		3E4FABA022410573000508AB /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TJDBluetoothSDK.framework; path = "../../../Library/Developer/Xcode/DerivedData/TJDBluetoothSDK-bribjfimbwcslngaziiqoywwnpbb/Build/Products/Release-iphoneos/TJDBluetoothSDK.framework"; sourceTree = "<group>"; };
+		3E4FABAE22411290000508AB /* TJDBluetoothSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TJDBluetoothSDK.framework; sourceTree = "<group>"; };
 		3ECE662521DDFEFD00444B8A /* TJDBluetoothSDKDemoOC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TJDBluetoothSDKDemoOC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ECE662821DDFEFD00444B8A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3ECE662921DDFEFD00444B8A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -58,19 +61,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E760C2321F86F78009E4FD8 /* TJDBluetoothSDK.framework in Frameworks */,
+				3E4FABAF22411290000508AB /* TJDBluetoothSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3E4FAB9F22410573000508AB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3E4FABA022410573000508AB /* TJDBluetoothSDK.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3ECE661C21DDFEFD00444B8A = {
 			isa = PBXGroup;
 			children = (
-				3E760C2221F86F78009E4FD8 /* TJDBluetoothSDK.framework */,
+				3E4FABAE22411290000508AB /* TJDBluetoothSDK.framework */,
 				3ECE662721DDFEFD00444B8A /* TJDBluetoothSDKDemoOC */,
 				3ECE662621DDFEFD00444B8A /* Products */,
+				3E4FAB9F22410573000508AB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -93,6 +105,7 @@
 				3E30B6AF21E4376B00BD2126 /* FunctionViewController.m */,
 				3E30B6C121E4708700BD2126 /* SwitchViewController.h */,
 				3E30B6C221E4708700BD2126 /* SwitchViewController.m */,
+				3E4FAB932240F2CF000508AB /* SmartBand2.0.bin */,
 				3ECE662E21DDFEFD00444B8A /* Main.storyboard */,
 				3ECE663121DDFEFE00444B8A /* Assets.xcassets */,
 				3ECE663321DDFEFE00444B8A /* LaunchScreen.storyboard */,
@@ -163,6 +176,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E4FAB942240F2CF000508AB /* SmartBand2.0.bin in Resources */,
 				3ECE663521DDFEFE00444B8A /* LaunchScreen.storyboard in Resources */,
 				3ECE663221DDFEFE00444B8A /* Assets.xcassets in Resources */,
 				3ECE663021DDFEFD00444B8A /* Main.storyboard in Resources */,

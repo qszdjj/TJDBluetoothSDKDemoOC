@@ -33,7 +33,7 @@
     [self setupNotify];
     
     //若手环有过滤条件，请填写相应厂商的过滤条件
-//    bleSelf.filterString = @"TJDR";
+    bleSelf.filterString = @"YW";
     [bleSelf setupManager];
     [WUAppManager setIsDebug:true];
 }
@@ -91,6 +91,10 @@
     if (notify.name == WUBleManagerNotifyKeys.disconnected) {
         NSLog(@"WUBleManagerNotifyKeys.disconnected");
         [self.navigationController popToRootViewControllerAnimated:true];
+        //断开后，进行重连
+        if (bleSelf.activeModel.isBond) {
+            [bleSelf reConnectDevice];
+        }
     }
     
     if (notify.name == WUBleManagerNotifyKeys.connected) {
@@ -119,6 +123,7 @@
     }
     
     if (notify.name == WristbandNotifyKeys.read_Sport) {
+        [WUAppManager testPrint:bleSelf.activeModel];
         NSLog(@"%d 步, %d cal, %d m", (int)bleSelf.step, (int)bleSelf.cal, (int)bleSelf.distance);
         //再获取手环的历史记步
         [bleSelf aloneGetStepWith:0];
@@ -186,8 +191,10 @@
                 [self.dataArray addObject:model];
                 
                 if (model.indexCount == model.index + 1) {
+                    // 这个是详细睡眠列表
                     NSArray *timeSleepArray = [SleepTimeModel sleepTime:self.dataArray];
                     NSArray *detailSleepArray = [SleepTimeModel detailSleep:timeSleepArray];
+                    NSInteger sleepQuality = [SleepTimeModel sleepQuality:detailSleepArray];
                     int wake = [detailSleepArray[0] intValue];
                     int light = [detailSleepArray[1] intValue];
                     int deep = [detailSleepArray[2] intValue];
@@ -205,7 +212,6 @@
         }
     }
 }
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
