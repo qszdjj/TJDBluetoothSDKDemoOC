@@ -49,6 +49,8 @@
 }
 
 - (IBAction)pressStop:(UIBarButtonItem *)sender {
+    bleSelf.activeModel.isBond = false;
+    
     [bleSelf disconnectBleDevice];
 //    [bleSelf stopFindBleDevices];
 //    [self.bleModels removeAllObjects];
@@ -71,6 +73,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.read_Sleep object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.read_All_Sleep object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.sysCeLiang_heart object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNotify:) name:WristbandNotifyKeys.sysCeLiang_blood object:nil];
 }
 
 
@@ -204,11 +207,20 @@
             }
         }
     }
-    
+    // 如果手环有心率功能的话
     if (notify.name == WristbandNotifyKeys.sysCeLiang_heart) {
         HeartModel *heartModel = notify.object;
         if ((heartModel.indexCount == 0) || (heartModel.indexCount == heartModel.index)) {
-            NSLog(@"同步历史心率完成，这里可以结束刷新数据");
+            [bleSelf aloneGetMeasure:WristbandMeasureType.blood];
+            NSLog(@"同步历史心率完成");
+        }
+    }
+    
+    // 如果手环有血压功能的话
+    if (notify.name == WristbandNotifyKeys.sysCeLiang_blood) {
+        HeartModel *heartModel = notify.object;
+        if ((heartModel.indexCount == 0) || (heartModel.indexCount == heartModel.index)) {
+            NSLog(@"同步历史血压完成，这里可以结束刷新数据");
         }
     }
 }

@@ -717,6 +717,8 @@ SWIFT_CLASS("_TtC15TJDBluetoothSDK10WUBleModel")
 /// 内部型号
 /// Internal model
 @property (nonatomic, copy) NSString * _Nonnull internalNumber;
+/// YWQ 公司专用设备id, 其他公司无
+@property (nonatomic, copy) NSString * _Nonnull deviceID;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
